@@ -165,7 +165,7 @@ Sub SendMail(ByVal strGroupCn, ByVal strPathCurr, ByVal strPathPrev)
 	WScript.Echo "RUNNING: " & c
 	objShell.Run "cmd /c " & c, 0, True
 	Set objShell = Nothing
-End Sub
+End Sub 
 
 
 
@@ -201,15 +201,22 @@ Sub CheckGroupForChanges(ByVal strRootDse, ByVal strGroupCn)
 	objShell.Run "cmd /c " & c, 0, True
 	Set objShell = Nothing
 	
-	intSizeCurr = GetFileSize(strPathCurr)
-	intSizePrev = GetFileSize(strPathPrev)
 	
-	If intSizeCurr <> intSizePrev Then
-		WScript.Echo "Modification in group " & strGroupCn & " detected"
+	If (FileExists(strPathPrev) = True) And (FileExists(strPathCurr) = True) Then
+		'' When both the files are available do the check.
+		''
+		intSizePrev = GetFileSize(strPathPrev)
+		intSizeCurr = GetFileSize(strPathCurr)
+	
+		If intSizeCurr <> intSizePrev Then
+			WScript.Echo "Modification in group " & strGroupCn & " detected"
 		
-		Call SendMail(strGroupCn, strPathCurr, strPathPrev)
-	Else	
-		WScript.Echo "No changes in " & strGroupCn & " detected"
+			Call SendMail(strGroupCn, strPathCurr, strPathPrev)
+		Else	
+			WScript.Echo "No changes in " & strGroupCn & " detected"
+		End If
+	Else
+		WScript.Echo "WARNING: First run, so ignoring the absence " & strPathCurr & " or " & strPathPrev
 	End If
 End Sub 
 
