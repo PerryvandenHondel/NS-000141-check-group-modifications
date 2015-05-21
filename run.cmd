@@ -1,0 +1,1 @@
+cscript.exe //nologo %0\..\check-group-modifications.vbs
